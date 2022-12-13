@@ -18,7 +18,7 @@
 lda 2000h;
 mov b,a; num=4
 mvi c,03h; c=02h but it's power 3,ie n=i then power = n+1
-lxi h,00h;
+mvi h,00h;
 mov d,a;numA=num
 i: mvi m,00h;
 lda 2000h;
@@ -26,7 +26,7 @@ mov b,a;
 mvi a,00h;
 j:add d;
 jnc con;
-inx h;
+inr h;
 con:dcr b;
 jnz j;
 mov d,a;
