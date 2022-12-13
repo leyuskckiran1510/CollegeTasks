@@ -16,7 +16,6 @@
 
 ;memory location 2000h
 lda 2000h;
-sta 2050h;
 mov b,a; num=4
 mvi c,03h; c=02h but it's power 3,ie n=i then power = n+1
 lxi h,00h;
