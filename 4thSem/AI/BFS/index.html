@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breadth For Search</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="utils.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="graph_title">
+            Breadth For Search
+        </div>
+        <div class="graph_container">
+            <div class="graph">
+                <canvas width="1920" height="850">
+                </canvas>
+            </div>
+            <div class="graph_controls">
+                <div class="slider">
+                    <input type="range" min="10" value="10" max="100" id="colsRange" step="1"
+                        oninput="updateValue(this)" onchange="changedRange(this)">
+                    <label for="colsRange">Columns:<span id='_value'>0</span></label>
+                </div>
+                <div class="slider">
+                    <input type="range" min="10" value="10" max="100" id="rowsRange" step="1"
+                        oninput="updateValue(this)" onchange="changedRange(this)">
+                    <label for="rowsRange">Rows:<span id='_value'>0</span></label>
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" id="as_ratio">
+                    <label for="as_ratio">Preserve scalling</label>
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" id="as_binded">
+                    <label for="as_binded">Bind Cell</label>
+                </div>
+                <div class="colorPicker">
+                    <input type="color" id="colorPicker" onchange="changedColor(this)">
+                    <label for="colorPicker">Pick Pen Color</label>
+                </div>
+                <div class="clearButton">
+                    <button type="button" id="clearS" onclick="draw_graph(this)">
+                    <label for="clearS">Clear Screen</label>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+<script>
+    const __canvasWidth = 1920
+    const __canvasHeight = 850
+    var graphDim = [67, 30]
+    const canvasDiv = document.querySelector("div.graph")
+    const canvas = document.querySelector("div.graph>canvas")
+    const context = canvas.getContext("2d")
+    let srcPos = [0,0]
+    let desPos = [0,0]
+    let penColor = "yellow"
+    var box = generateGrid(canvas, context, ...graphDim)
+    
+
+
+    var cellClick = (x) => {
+        x.style.background = "red"
+    }
+    let draw_graph = () => {
+        box = generateGrid(canvas, context, graphDim[0], graphDim[1])
+    }
+    var updateValue = (x) => {
+        let span = x.parentNode.querySelector("#_value")
+        span.innerText = x.value
+    }
+
+    let update_graphDim = (x, y) => {
+        x = Math.floor(x)
+        y = Math.floor(y)
+        const colsSlider = document.querySelector("#colsRange")
+        const rowsSlider = document.querySelector("#rowsRange")
+        colsSlider.value = x
+        rowsSlider.value = y
+        colsSlider.parentNode.querySelector("#_value").innerText = x
+        rowsSlider.parentNode.querySelector("#_value").innerText = y
+        graphDim = [x, y]
+    }
+    var changedColor = (x)=>{
+        penColor = x.value
+    }
+
+    var changedRange = (x) => {
+        if (document.querySelector("input#as_ratio").checked) {
+            if (x.id == "colsRange") {
+                update_graphDim(x.value, (x.value / __canvasWidth) * __canvasHeight)
+            } else {
+                update_graphDim((x.value / __canvasHeight) * __canvasWidth, x.value)
+            }
+        }
+        if (document.querySelector("input#as_binded").checked) {
+            update_graphDim(x.value, x.value)
+
+        } else {
+            if (x.id == "colsRange") {
+                update_graphDim(x.value, graphDim[1])
+            } else {
+                update_graphDim(graphDim[0], x.value)
+            }
+        }
+
+        draw_graph()
+    }
+    update_graphDim(...graphDim)
+    let mouseDown = false
+    canvas.addEventListener('mousedown', ()=>{mouseDown=true})
+    canvas.addEventListener('mouseup', ()=>{mouseDown=false})
+    canvas.addEventListener('mousemove', function(event) {
+        if (mouseDown) {
+            colorCell(canvas,context, event.pageX, event.pageY, penColor)
+        }
+    })
+
+    canvas.addEventListener('click',()=>{
+        if (!mouseDown) {
+        colorCell(canvas,context, event.pageX ,event.pageY,penColor)
+    }
+    })
+
+</script>
+
+</html>
