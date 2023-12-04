@@ -44,7 +44,9 @@
                 </div>
                 <div class="clearButton">
                     <button type="button" id="clearS" onclick="draw_graph(this)">
-                    <label for="clearS">Clear Screen</label>
+                        Clear Screen
+                    </button>
+
                 </div>
             </div>
 
@@ -55,21 +57,22 @@
     const __canvasWidth = 1920
     const __canvasHeight = 850
     var graphDim = [67, 30]
+    var graphDim = [137,61]
     const canvasDiv = document.querySelector("div.graph")
     const canvas = document.querySelector("div.graph>canvas")
     const context = canvas.getContext("2d")
-    let srcPos = [0,0]
-    let desPos = [0,0]
+    let srcPos = [0, 0]
+    let desPos = [0, 0]
     let penColor = "yellow"
-    var box = generateGrid(canvas, context, ...graphDim)
-    
+    var GRID = generateGrid(canvas, context, ...graphDim)
+
 
 
     var cellClick = (x) => {
         x.style.background = "red"
     }
     let draw_graph = () => {
-        box = generateGrid(canvas, context, graphDim[0], graphDim[1])
+        GRID = generateGrid(canvas, context, graphDim[0], graphDim[1])
     }
     var updateValue = (x) => {
         let span = x.parentNode.querySelector("#_value")
@@ -87,7 +90,7 @@
         rowsSlider.parentNode.querySelector("#_value").innerText = y
         graphDim = [x, y]
     }
-    var changedColor = (x)=>{
+    var changedColor = (x) => {
         penColor = x.value
     }
 
@@ -114,19 +117,20 @@
     }
     update_graphDim(...graphDim)
     let mouseDown = false
-    canvas.addEventListener('mousedown', ()=>{mouseDown=true})
-    canvas.addEventListener('mouseup', ()=>{mouseDown=false})
+    canvas.addEventListener('mousedown', () => { mouseDown = true })
+    canvas.addEventListener('mouseup', () => { mouseDown = false })
     canvas.addEventListener('mousemove', function(event) {
         if (mouseDown) {
-            colorCell(canvas,context, event.pageX, event.pageY, penColor)
+            colorCell(canvas, context, event.pageX, event.pageY, penColor)
         }
     })
 
-    canvas.addEventListener('click',()=>{
+    canvas.addEventListener('click', () => {
         if (!mouseDown) {
-        colorCell(canvas,context, event.pageX ,event.pageY,penColor)
-    }
+            colorCell(canvas, context, event.pageX, event.pageY, penColor)
+        }
     })
+    
 
 </script>
 
