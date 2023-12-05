@@ -7,6 +7,8 @@
     <title>Breadth For Search</title>
     <link rel="stylesheet" href="style.css">
     <script src="utils.js"></script>
+    <script src="algorithms.js"></script>
+    
 </head>
 
 <body>
@@ -57,10 +59,10 @@
     const __canvasWidth = 1920
     const __canvasHeight = 850
     var graphDim = [67, 30]
-    var graphDim = [137,61]
+    // var graphDim = [137,61]
     const canvasDiv = document.querySelector("div.graph")
     const canvas = document.querySelector("div.graph>canvas")
-    const context = canvas.getContext("2d")
+    const context = canvas.getContext("2d",{willReadFrequently:true})
     let srcPos = [0, 0]
     let desPos = [0, 0]
     let penColor = "yellow"
@@ -89,6 +91,10 @@
         colsSlider.parentNode.querySelector("#_value").innerText = x
         rowsSlider.parentNode.querySelector("#_value").innerText = y
         graphDim = [x, y]
+
+        createNodes(x,y)
+        console.log("calling draw graph")
+        draw_graph()
     }
     var changedColor = (x) => {
         penColor = x.value

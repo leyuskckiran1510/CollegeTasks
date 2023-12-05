@@ -84,3 +84,7 @@ let colorCellByIndex = (_canvas,context, xi, yi, color) => {
     );
     context.fillStyle = _old;
 }
+
+
+
+
