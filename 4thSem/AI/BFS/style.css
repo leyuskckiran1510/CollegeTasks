@@ -59,16 +59,15 @@ body {
 
 .graph_controls {
     display: flex;
-    padding: 1.5rem 0.5rem;
+    padding: 0.5rem 0.5rem 0 0.5rem;
     grid-column: 2;
-    gap: 20px;
+    gap: 17px;
     grid-row: 1;
     border: 1px solid;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
 }
-
 .graph_controls label,
 .graph_controls span {
     color: #7b7bdc;
@@ -147,4 +146,17 @@ input#colorPicker {
     padding: 5px;
     text-align: center;
     text-decoration: none;
+}
+li {
+    margin: 3px;
+    padding: 4px 10px;
+    background: #1f1f2c;
+    color: #85baeb;
+    border-radius: 5px;
+    border: 1px #2f2f43 solid;
+}
+ul{
+    inset: 0;
+    padding: 0;
+    margin: 0;
 }

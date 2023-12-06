@@ -45,7 +45,7 @@ class Grid {
 
 
 let generateGrid = (canvas, context, cols, rows) => {
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    
     let start_pos = [0, 0]
     let end_pos = [canvas.width, canvas.height]
     let width = ((end_pos[0] - start_pos[0]) / cols)

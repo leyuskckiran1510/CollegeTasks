@@ -1,7 +1,7 @@
 # Basic HTML CANAS GRID
 
 ## demo
-![Demo](./websample_.png)
+![Demo](./demo.png)
 ![Demo](./factral.png)
 
 # Avilable Functions

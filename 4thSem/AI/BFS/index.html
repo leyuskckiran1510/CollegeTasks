@@ -40,15 +40,35 @@
                     <input type="checkbox" id="as_binded">
                     <label for="as_binded">Bind Cell</label>
                 </div>
+                <div class="checkbox">
+                    <input type="checkbox" id="bfsDfs" onchange="BFS^=1;changeNmae()">
+                    <label for="bfsDfs">CHECK FOR DFS</label>
+                </div>
                 <div class="colorPicker">
                     <input type="color" id="colorPicker" onchange="changedColor(this)">
                     <label for="colorPicker">Pick Pen Color</label>
+                </div>
+                <div class="slider">
+                    <input type="range" min="10" value="100" max="1000" id="sppedRange" step="1"
+                        oninput="updateValue(this)" onchange="changedSpeed(this)">
+                    <label for="sppedRange">AnimationSpeed <span id='_value'>100</span>ms</label>
+                </div>
+                <div class="clearButton">
+                    <button type="button" id="clearS" onclick="startAnimation()">
+                        START
+                    </button>
                 </div>
                 <div class="clearButton">
                     <button type="button" id="clearS" onclick="draw_graph(this)">
                         Clear Screen
                     </button>
-
+                </div>
+                <div class="note">
+                    <ul>
+                        <li>Pick Red Color Varient For Source</li>
+                        <li>Pick Yellow Color Varitent For Wall</li>
+                        <li>Green Colo is the traversed Path</li>
+                    </ul>
                 </div>
             </div>
 
@@ -59,7 +79,8 @@
     const __canvasWidth = 1920
     const __canvasHeight = 850
     var graphDim = [67, 30]
-    // var graphDim = [137,61]
+    var graphDim = [10,10]
+    var graphDim = [57,57]
     const canvasDiv = document.querySelector("div.graph")
     const canvas = document.querySelector("div.graph>canvas")
     const context = canvas.getContext("2d",{willReadFrequently:true})
@@ -67,18 +88,37 @@
     let desPos = [0, 0]
     let penColor = "yellow"
     var GRID = generateGrid(canvas, context, ...graphDim)
+    var SPEED = 10//ms
 
+    let changeNmae = ()=>{
+        let names = ["Depth For Search","Breadth For Search"]
+        let nameDiv = document.querySelector(".graph_title")
+        let docTitle = document.title
+        nameDiv.innerText = names[BFS]
+        docTitle.innerText = names[BFS]
+    }
 
 
     var cellClick = (x) => {
         x.style.background = "red"
     }
     let draw_graph = () => {
+        for (x of timeOuts){
+            clearTimeout(x)
+        }
+        timeOuts = []
+        context.clearRect(0, 0, canvas.width, canvas.height);
         GRID = generateGrid(canvas, context, graphDim[0], graphDim[1])
     }
     var updateValue = (x) => {
         let span = x.parentNode.querySelector("#_value")
         span.innerText = x.value
+    }
+    var startAnimation = ()=>{
+        createNodes(...graphDim)
+        // draw_graph();
+        bFs(rootNode);
+
     }
 
     let update_graphDim = (x, y) => {
@@ -91,13 +131,13 @@
         colsSlider.parentNode.querySelector("#_value").innerText = x
         rowsSlider.parentNode.querySelector("#_value").innerText = y
         graphDim = [x, y]
-
-        createNodes(x,y)
-        console.log("calling draw graph")
         draw_graph()
     }
     var changedColor = (x) => {
         penColor = x.value
+    }
+    var changedSpeed = (x)=>{
+        SPEED = x.value
     }
 
     var changedRange = (x) => {
@@ -139,5 +179,4 @@
     
 
 </script>
-
 </html>
