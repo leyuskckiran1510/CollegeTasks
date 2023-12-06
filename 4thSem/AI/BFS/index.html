@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Breadth For Search</title>
+    <title>Breadth First Search</title>
     <link rel="stylesheet" href="style.css">
     <script src="utils.js"></script>
     <script src="algorithms.js"></script>
@@ -14,7 +14,7 @@
 <body>
     <div class="container">
         <div class="graph_title">
-            Breadth For Search
+            Breadth First Search
         </div>
         <div class="graph_container">
             <div class="graph">
@@ -57,6 +57,9 @@
                     <button type="button" id="clearS" onclick="startAnimation()">
                         START
                     </button>
+                    <button type="button" id="clearS" onclick="LAST_USED=true;startAnimation()">
+                        USE_LAST
+                    </button>
                 </div>
                 <div class="clearButton">
                     <button type="button" id="clearS" onclick="draw_graph(this)">
@@ -91,7 +94,7 @@
     var SPEED = 10//ms
 
     let changeNmae = ()=>{
-        let names = ["Depth For Search","Breadth For Search"]
+        let names = ["Depth First Search","Breadth First Search"]
         let nameDiv = document.querySelector(".graph_title")
         let docTitle = document.title
         nameDiv.innerText = names[BFS]
@@ -117,7 +120,7 @@
     var startAnimation = ()=>{
         createNodes(...graphDim)
         // draw_graph();
-        bFs(rootNode);
+        run(rootNode);
 
     }
 

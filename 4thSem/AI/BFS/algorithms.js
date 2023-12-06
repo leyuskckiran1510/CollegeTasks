@@ -6,8 +6,10 @@ const FINAL_NODE = 2
 const WALL_NODE = 2
 const print = console.log
 var nodeCollection = new Array()
+var LAST_USED = false
+var old_nodeCollection = new Array()
 var rootNode = null
-var COLORS = ["red", "green", "blue", "pink"]
+var COLORS = ["red", "green", "yellow", "blue"]
 var timeOuts = []
 var BFS = 1
 
@@ -50,27 +52,36 @@ let createNodes = (rows, cols) => {
     nodeCollection = new Array()
     //create Nodes
     print("Making Nodes")
-    rootNode = null
-    for (let row = 0; row < rows; row++) {
-        let _temp = []
-        for (let col = 0; col < cols; col++) {
-            let [px, py] = GRID.pos_from_index(col, row)
-            let _colValue = context.getImageData(px+GRID.width/2, py+GRID.height/2, 1, 1).data
-            if (_colValue[0] >= 200 && _colValue[1] >= 200 && _colValue[2] <= 100) {
-                _temp.push(new Node(col * row, WALL_NODE, col, row))
-            } else if (_colValue[0] >= 200 && _colValue[1] <= 100 && _colValue[2] <= 100 && rootNode == null) {
-                let _rt = new Node(col * row, ROOT_NODE, col, row)
-                rootNode = _rt;
-                print("FoundRoot")
-                _temp.push(rootNode)
-            }
-            else {
-                _temp.push(new Node(col * row, PATH_NODE, col, row))
+    if (LAST_USED) {
+        LAST_USED = false
+        nodeCollection = JSON.parse(JSON.stringify(old_nodeCollection))
+    } else {
+        rootNode = null
+        for (let row = 0; row < rows; row++) {
+            let _temp = []
+            for (let col = 0; col < cols; col++) {
+                let [px, py] = GRID.pos_from_index(col, row)
+                let _colValue = context.getImageData(px + GRID.width / 2, py + GRID.height / 2, 1, 1).data
+                if (_colValue[0] >= 200 && _colValue[1] >= 200 && _colValue[2] <= 100) {
+                    _temp.push(new Node(col * row, WALL_NODE, col, row))
+                } else if (_colValue[0] >= 200 &&
+                    _colValue[1] <= 100 &&
+                    _colValue[2] <= 100 &&
+                    rootNode == null) {
+                    let _rt = new Node(col * row, ROOT_NODE, col, row)
+                    rootNode = _rt;
+                    _temp.push(rootNode)
+                }
+                else {
+                    _temp.push(new Node(col * row, PATH_NODE, col, row))
 
+                }
             }
+            nodeCollection.push(_temp)
         }
-        nodeCollection.push(_temp)
+        old_nodeCollection = JSON.parse(JSON.stringify(nodeCollection))
     }
+    print(old_nodeCollection)
 
     make_child(rootNode)
 
@@ -88,17 +99,22 @@ let make_child = (root) => {
                 x < nodeCollection[0].length && 
                 y >= 0 && 
                 y < nodeCollection.length &&
-                !nodeCollection[y][x].owned &&
-                nodeCollection[y][x].type != WALL_NODE
+                !nodeCollection[y][x].owned
+                
             ) {
-                nodeCollection[y][x].owned = true
-                child.childs.push(nodeCollection[y][x])
-                if(BFS){
-                    childs.push(nodeCollection[y][x])
-                }else{
-                    make_child(nodeCollection[y][x])
-
+                if (nodeCollection[y][x].type == WALL_NODE) {
+                    colorCellByIndex(canvas, context, nodeCollection[y][x].ix, nodeCollection[y][x].iy, COLORS[nodeCollection[y][x].type])
+                } else {
+                    nodeCollection[y][x].owned = true
+                    child.childs.push(nodeCollection[y][x])
+                    if (BFS) {
+                        childs.push(nodeCollection[y][x])
+                    } else {
+                        // childs.push(nodeCollection[y][x])
+                        make_child(nodeCollection[y][x])
+                    }
                 }
+                
             }
         }
     }
@@ -122,4 +138,27 @@ let bFs = (...root_node) => {
         bFs(...childs)
     }, SPEED)
     timeOuts.push(id)
+}
+
+let dFs = (root_node) => {
+    for (let x of root_node.childs) {
+        if (!x.traversed) {
+            x.traversed = true
+            let id = setTimeout(() => {
+                // print("running DFS",x)
+                colorCellByIndex(canvas, context, x.ix, x.iy, COLORS[x.type])
+                dFs(x)
+            }, SPEED)
+            timeOuts.push(id)
+        }
+    }
+}
+
+let run = (_root) => {
+    if (BFS) {
+        bFs(_root)
+    } else {        
+        // bFs(_root)
+        dFs(_root)
+    }
 }
