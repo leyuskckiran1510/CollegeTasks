@@ -136,6 +136,7 @@
         colsSlider.parentNode.querySelector("#_value").innerText = x
         rowsSlider.parentNode.querySelector("#_value").innerText = y
         graphDim = [x, y]
+        createNodes(...graphDim)
         draw_graph()
     }
     var changedColor = (x) => {

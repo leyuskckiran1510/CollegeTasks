@@ -10,6 +10,7 @@ var LAST_USED = false
 var old_nodeCollection = new Array()
 var rootNode = null
 var COLORS = ["red", "green", "yellow", "blue"]
+var  knockBack = "#4ae54a"
 var timeOuts = []
 var BFS = 1
 
@@ -33,19 +34,15 @@ let sleep = (x) => {
 
 
 let direcs = [
-    // front ->middle/top/down
     [1, 0],
+    [0, 1],
+    [0, -1],
+    [-1, 0],
     // [1, -1],
     // [1, 1],
     
-    // back ->middle/top/down
-    [-1, 0],
     // [-1, -1],
     // [-1, 1],
-
-    // center ->middle/top/down
-    [0, 1],
-    [0, -1],
 ]
 
 let createNodes = (rows, cols) => {
@@ -95,9 +92,21 @@ let createNodes = (rows, cols) => {
     GRID = generateGrid(canvas, context, graphDim[0], graphDim[1])   
 }
 
+let shuffel = (list)=>{
+    let _temp = []
+    while(list.length>0){
+        let rand = Math.floor(Math.random()*list.length)
+        _temp.push(list.splice(rand,1)[0])
+    }
+    return _temp
+}
 let make_child = (root) => {
     let childs = [root]
-    for (let child of childs) {
+    let dfsChild = []
+    for (let child of childs) {    
+        if(child==null){
+            continue
+        }
         for (dir of direcs) {
             let [x, y] = [child.ix + dir[0], child.iy + dir[1]]
             if (
@@ -119,12 +128,16 @@ let make_child = (root) => {
                     if (BFS) {
                         childs.push(nodeCollection[y][x])
                     } else {
-                        // childs.push(nodeCollection[y][x])
-                        make_child(nodeCollection[y][x])
+                        dfsChild.push(nodeCollection[y][x])
                     }
                 }
                 
             }
+        }
+    }
+    if(!BFS){
+        for(let _child of dfsChild){
+            make_child(_child)
         }
     }
 
@@ -142,6 +155,7 @@ let travelBack = (node) => {
     }
 }
 
+
 let bFs = (...root_node) => {
     let my_slice = [...root_node]
     let childs = []
@@ -155,8 +169,8 @@ let bFs = (...root_node) => {
 
         if (_childs.length > 0) {
             colorCellByIndex(canvas, context, visted.ix, visted.iy, COLORS[visted.type])
-        } else {
-            colorCellByIndex(canvas, context, visted.ix, visted.iy, "grey")
+        } else if (visted.type==PATH_NODE){
+            colorCellByIndex(canvas, context, visted.ix, visted.iy, knockBack)
         }
         visted.traversed = true
         if (visted.type == FINAL_NODE) {
@@ -175,17 +189,17 @@ let bFs = (...root_node) => {
 }
 
 let dFs = (root_node) => {
+    root_node.childs = shuffel(root_node.childs)
     for (let x of root_node.childs) {
         if (!x.traversed) {
             x.traversed = true
             let id = setTimeout(() => {
-                // print("running DFS",x)
                 let _has_child = 0
                 if (x.childs.length > 0) {
                     colorCellByIndex(canvas, context, x.ix, x.iy, COLORS[x.type])
                     _has_child = 1
                 } else {
-                    colorCellByIndex(canvas, context, x.ix, x.iy, "grey")
+                    colorCellByIndex(canvas, context, x.ix, x.iy, knockBack)
                 }
                 if (x.type == FINAL_NODE) {
                     for (let _m of timeOuts) {
@@ -197,7 +211,7 @@ let dFs = (root_node) => {
                 if (_has_child) {
                     dFs(x)
                 }
-            }, SPEED)
+            }, SPEED/10)
             timeOuts.push(id)
         }
     }
@@ -206,9 +220,16 @@ let dFs = (root_node) => {
 let run = (_root) => {
     // bFs(_root)
     if (BFS) {
-        bFs(_root)
+        let id = setTimeout(()=>{
+            bFs(_root)
+
+        },0)
+        timeOuts.push(id)
     } else {        
-        // bFs(_root)
-        dFs(_root)
+        let id = setTimeout(()=>{
+            dFs(_root)
+            
+        },0)
+        timeOuts.push(id)
     }
 }
