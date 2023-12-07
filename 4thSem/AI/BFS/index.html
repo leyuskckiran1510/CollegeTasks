@@ -23,12 +23,12 @@
             </div>
             <div class="graph_controls">
                 <div class="slider">
-                    <input type="range" min="10" value="10" max="100" id="colsRange" step="1"
+                    <input type="range" min="5" value="10" max="100" id="colsRange" step="1"
                         oninput="updateValue(this)" onchange="changedRange(this)">
                     <label for="colsRange">Columns:<span id='_value'>0</span></label>
                 </div>
                 <div class="slider">
-                    <input type="range" min="10" value="10" max="100" id="rowsRange" step="1"
+                    <input type="range" min="5" value="10" max="100" id="rowsRange" step="1"
                         oninput="updateValue(this)" onchange="changedRange(this)">
                     <label for="rowsRange">Rows:<span id='_value'>0</span></label>
                 </div>
@@ -45,8 +45,12 @@
                     <label for="bfsDfs">CHECK FOR DFS</label>
                 </div>
                 <div class="colorPicker">
-                    <input type="color" id="colorPicker" onchange="changedColor(this)">
-                    <label for="colorPicker">Pick Pen Color</label>
+                    <!-- <input type="color" id="colorPicker" onchange="changedColor(this)"> -->
+                    <button id="srcBtn" onclick="penColor='red'">SRC</button>
+                    <button id="wallBtn" onclick="penColor='yellow'">WALL</button>
+                    <button id="finalBtn" onclick="penColor='blue'">FINAL</button>
+                    <button id="eraserBtn" onclick="penColor='#191925'">ERASER</button>
+
                 </div>
                 <div class="slider">
                     <input type="range" min="10" value="100" max="1000" id="sppedRange" step="1"
@@ -81,9 +85,7 @@
 <script>
     const __canvasWidth = 1920
     const __canvasHeight = 850
-    var graphDim = [67, 30]
-    var graphDim = [10,10]
-    var graphDim = [57,57]
+    var graphDim = [7,7]
     const canvasDiv = document.querySelector("div.graph")
     const canvas = document.querySelector("div.graph>canvas")
     const context = canvas.getContext("2d",{willReadFrequently:true})
