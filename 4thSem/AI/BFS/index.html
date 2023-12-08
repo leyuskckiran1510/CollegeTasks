@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="utils.js"></script>
     <script src="algorithms.js"></script>
-    
+
 </head>
 
 <body>
@@ -23,13 +23,13 @@
             </div>
             <div class="graph_controls">
                 <div class="slider">
-                    <input type="range" min="5" value="10" max="100" id="colsRange" step="1"
-                        oninput="updateValue(this)" onchange="changedRange(this)">
+                    <input type="range" min="5" value="10" max="100" id="colsRange" step="1" oninput="updateValue(this)"
+                        onchange="changedRange(this)">
                     <label for="colsRange">Columns:<span id='_value'>0</span></label>
                 </div>
                 <div class="slider">
-                    <input type="range" min="5" value="10" max="100" id="rowsRange" step="1"
-                        oninput="updateValue(this)" onchange="changedRange(this)">
+                    <input type="range" min="5" value="10" max="100" id="rowsRange" step="1" oninput="updateValue(this)"
+                        onchange="changedRange(this)">
                     <label for="rowsRange">Rows:<span id='_value'>0</span></label>
                 </div>
                 <div class="checkbox">
@@ -42,7 +42,11 @@
                 </div>
                 <div class="checkbox">
                     <input type="checkbox" id="bfsDfs" onchange="BFS^=1;changeNmae()">
-                    <label for="bfsDfs">CHECK FOR DFS</label>
+                    <label for="bfsDfs">DFS</label>
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" id="inFormed" onchange="INFORMED^=1">
+                    <label for="inFormed">INFORMED</label>
                 </div>
                 <div class="colorPicker">
                     <!-- <input type="color" id="colorPicker" onchange="changedColor(this)"> -->
@@ -55,13 +59,13 @@
                 <div class="slider">
                     <input type="range" min="10" value="100" max="1000" id="sppedRange" step="1"
                         oninput="updateValue(this)" onchange="changedSpeed(this)">
-                    <label for="sppedRange">AnimationSpeed <span id='_value'>100</span>ms</label>
+                    <label for="sppedRange">Step Duration <span id='_value'>100</span>ms</label>
                 </div>
                 <div class="clearButton">
                     <button type="button" id="clearS" onclick="startAnimation()">
                         START
                     </button>
-                    <button type="button" id="clearS" onclick="LAST_USED=true;startAnimation()">
+                    <button type="button" id="clearS" onclick="LAST_USED=true;useLast()">
                         USE_LAST
                     </button>
                 </div>
@@ -85,30 +89,25 @@
 <script>
     const __canvasWidth = 1920
     const __canvasHeight = 850
-    var graphDim = [7,7]
+    var graphDim = [7, 7]
     const canvasDiv = document.querySelector("div.graph")
     const canvas = document.querySelector("div.graph>canvas")
-    const context = canvas.getContext("2d",{willReadFrequently:true})
+    const context = canvas.getContext("2d", { willReadFrequently: true })
     let srcPos = [0, 0]
     let desPos = [0, 0]
     let penColor = "yellow"
     var GRID = generateGrid(canvas, context, ...graphDim)
     var SPEED = 10//ms
 
-    let changeNmae = ()=>{
-        let names = ["Depth First Search","Breadth First Search"]
+    let changeNmae = () => {
+        let names = ["Depth First Search", "Breadth First Search"]
         let nameDiv = document.querySelector(".graph_title")
         let docTitle = document.title
         nameDiv.innerText = names[BFS]
         docTitle.innerText = names[BFS]
     }
-
-
-    var cellClick = (x) => {
-        x.style.background = "red"
-    }
     let draw_graph = () => {
-        for (x of timeOuts){
+        for (x of timeOuts) {
             clearTimeout(x)
         }
         timeOuts = []
@@ -119,9 +118,20 @@
         let span = x.parentNode.querySelector("#_value")
         span.innerText = x.value
     }
-    var startAnimation = ()=>{
+    var useLast = () => {
+        if (LAST_USED) {
+            LAST_USED = false
+            nodeCollection = JSON.parse(JSON.stringify(old_nodeCollection))
+            paint_me_please(nodeCollection.length, nodeCollection[0].length)
+        }
+    }
+    var startAnimation = () => {
+        for (x of timeOuts) {
+            clearTimeout(x)
+        }
+        timeOuts = []
+
         createNodes(...graphDim)
-        // draw_graph();
         run(rootNode);
 
     }
@@ -142,7 +152,7 @@
     var changedColor = (x) => {
         penColor = x.value
     }
-    var changedSpeed = (x)=>{
+    var changedSpeed = (x) => {
         SPEED = x.value
     }
 
@@ -182,7 +192,8 @@
             colorCell(canvas, context, event.pageX, event.pageY, penColor)
         }
     })
-    
+
 
 </script>
+
 </html>
